@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurain - Clothing Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #004d40;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            background-color: #8e44ad;
+            color: white;
+        }
+        img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 3px solid #ffeb3b;
+        }
+        .options button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #ff9800;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .options button:hover {
+            background-color: #e65100;
+        }
+        select, input {
+            padding: 5px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ffeb3b;
+            background-color: #ffcc80;
+            color: black;
+        }
+        .cart {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ffeb3b;
+            color: black;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Nurain - Clothing Store</h2>
+        <img id="product-image" src="/mnt/data/A_stylish_T-shirt_displayed_on_a_mannequin_or_hang.png" alt="Clothing Item">
+        <p><strong>Price:</strong> <span id="price">$0.00</span></p>
+        <p><strong>Size:</strong> 
+            <select id="size">
+                <option value="">Select a size</option>
+            </select>
+        </p>
+        <p><strong>Quantity:</strong> 
+            <input type="number" id="quantity" value="1" min="1" onchange="updateTotalPrice()">
+        </p>
+        <p><strong>Total Price:</strong> <span id="total-price">$0.00</span></p>
+        <div class="options">
+            <button onclick="selectItem('T-Shirt', '/mnt/data/A_stylish_T-shirt_displayed_on_a_mannequin_or_hang.png', 20.00, ['M', 'L', 'XL'])">T-Shirt</button>
+            <button onclick="selectItem('Pant', 'pant.jpg', 30.00, ['30', '32', '34', '36'])">Pant</button>
+            <button onclick="selectItem('Jeans', 'jeans.jpg', 40.00, ['30', '32', '34', '36'])">Jeans</button>
+            <button onclick="selectItem('Coat', 'coat.jpg', 50.00, ['M', 'L', 'XL'])">Coat</button>
+        </div>
+        <button onclick="addToCart()">Add to Cart</button>
+    </div>
+    <div class="cart">
+        <h3>Shopping Cart</h3>
+        <ul id="cart-items"></ul>
+        <p><strong>Total:</strong> <span id="cart-total">$0.00</span></p>
+    </div>
+
+    <script>
+        let selectedPrice = 0;
+
+        function selectItem(name, imageUrl, price, sizes) {
+            document.getElementById("product-image").src = imageUrl;
+            document.getElementById("price").innerText = `$${price.toFixed(2)}`;
+            selectedPrice = price;
+            updateTotalPrice();
+            let sizeDropdown = document.getElementById("size");
+            sizeDropdown.innerHTML = "";
+            sizes.forEach(size => {
+                let option = document.createElement("option");
+                option.value = size;
+                option.innerText = size;
+                sizeDropdown.appendChild(option);
+            });
+        }
+
+        function updateTotalPrice() {
+            let quantity = document.getElementById("quantity").value;
+            document.getElementById("total-price").innerText = `$${(selectedPrice * quantity).toFixed(2)}`;
+        }
+
+        function addToCart() {
+            let size = document.getElementById("size").value;
+            let quantity = document.getElementById("quantity").value;
+            let totalPrice = (selectedPrice * quantity).toFixed(2);
+            if (size === "") {
+                alert("Please select a size.");
+                return;
+            }
+            let cartItems = document.getElementById("cart-items");
+            let li = document.createElement("li");
+            li.innerText = `Item: ${document.getElementById("product-image").alt}, Size: ${size}, Quantity: ${quantity}, Price: $${totalPrice}`;
+            cartItems.appendChild(li);
+            updateCartTotal();
+        }
+
+        function updateCartTotal() {
+            let total = 0;
+            document.querySelectorAll("#cart-items li").forEach(item => {
+                let price = parseFloat(item.innerText.split("$")[1]);
+                total += price;
+            });
+            document.getElementById("cart-total").innerText = `$${total.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
